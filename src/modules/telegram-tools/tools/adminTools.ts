@@ -193,7 +193,7 @@ export function registerAdminTools(server: McpServer): void {
     description: "Change the photo of a group or channel from a public image url or base64 data (up to 5 MB).",
     input: z.object({
       chat: chatRef,
-      url: z.url().optional(),
+      url: z.url({ protocol: /^https?$/ }).optional(),
       base64: z.string().optional(),
     }),
     annotations: WRITE,

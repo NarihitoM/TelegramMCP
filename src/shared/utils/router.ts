@@ -6,7 +6,7 @@ export function createRouter(routes: Routes): Handler {
   return (req) => {
     const pathname = new URL(req.url).pathname.replace(/(.)\/$/, "$1");
     const methods = routes[pathname];
-    if (!methods) return json({ error: "not_found" }, 404);
+    if (!methods) return json({ error: "not_found", path: pathname }, 404);
 
     if (req.method === "OPTIONS" && !methods.OPTIONS) return preflight();
 

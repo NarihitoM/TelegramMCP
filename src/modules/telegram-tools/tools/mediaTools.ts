@@ -16,7 +16,7 @@ const DICE = {
   dice: "\u{1F3B2}",
   darts: "\u{1F3AF}",
   basketball: "\u{1F3C0}",
-  football: "⚽",
+  football: "\u{26BD}",
   bowling: "\u{1F3B3}",
   slots: "\u{1F3B0}",
 };
@@ -24,6 +24,13 @@ const DICE = {
 type DiceKind = keyof typeof DICE;
 
 const diceKinds = Object.keys(DICE) as [DiceKind, ...DiceKind[]];
+
+const IMAGE_EXTENSIONS = /\.(jpe?g|png|webp)$/i;
+
+function externalMedia(url: string, asDocument: boolean): Api.InputMediaPhotoExternal | Api.InputMediaDocumentExternal {
+  const isImage = IMAGE_EXTENSIONS.test(new URL(url).pathname);
+  return isImage && !asDocument ? new Api.InputMediaPhotoExternal({ url }) : new Api.InputMediaDocumentExternal({ url });
+}
 
 function decodeBase64(data: string): Buffer {
   const buffer = Buffer.from(data.replace(/^data:[^;]+;base64,/, ""), "base64");
@@ -48,7 +55,7 @@ export function registerMediaTools(server: McpServer): void {
       "Send a photo, video, document or voice note. Pass a public url (Telegram downloads it) or base64 data up to 3 MB.",
     input: z.object({
       chat: chatRef,
-      url: z.url().optional(),
+      url: z.url({ protocol: /^https?$/ }).optional().describe("Public http(s) URL that Telegram downloads"),
       base64: z.string().optional(),
       fileName: z.string().min(1).max(255).optional().describe("Required with base64, e.g. report.pdf"),
       caption: z.string().max(1024).optional(),
@@ -62,9 +69,9 @@ export function registerMediaTools(server: McpServer): void {
     run: async (client, input) => {
       if (Boolean(input.url) === Boolean(input.base64)) throw new ToolError("Provide exactly one of url or base64");
 
-      let file: string | CustomFile;
+      let file: Api.TypeInputMedia | CustomFile;
       if (input.url) {
-        file = input.url;
+        file = externalMedia(input.url, input.asDocument);
       } else {
         if (!input.fileName) throw new ToolError("fileName is required with base64");
         const buffer = decodeBase64(input.base64 ?? "");
