@@ -166,8 +166,19 @@ export async function fetchPublic(target: string, { maxBytes, timeoutMs = 10_000
 
   const send = url.protocol === "https:" ? httpsRequest : httpRequest;
 
+  const deadline = AbortSignal.timeout(timeoutMs);
+
   return new Promise<RemoteFile>((resolve, reject) => {
-    const req = send(url, { method: "GET", lookup: safeLookup, timeout: timeoutMs }, (response) => {
+    const fail = (error: unknown) =>
+      reject(
+        deadline.aborted
+          ? new RemoteFetchError("Remote server timed out")
+          : error instanceof RemoteFetchError
+            ? error
+            : new RemoteFetchError("Could not fetch the URL"),
+      );
+
+    const req = send(url, { method: "GET", lookup: safeLookup, timeout: timeoutMs, signal: deadline }, (response) => {
       const status = response.statusCode ?? 0;
       if (status < 200 || status >= 300) {
         response.resume();
@@ -177,11 +188,11 @@ export async function fetchPublic(target: string, { maxBytes, timeoutMs = 10_000
 
       readLimited(response, maxBytes)
         .then((buffer) => resolve({ buffer, contentType: response.headers["content-type"] ?? null }))
-        .catch(reject);
+        .catch(fail);
     });
 
     req.on("timeout", () => req.destroy(new RemoteFetchError("Remote server timed out")));
-    req.on("error", (error) => reject(error instanceof RemoteFetchError ? error : new RemoteFetchError("Could not fetch the URL")));
+    req.on("error", fail);
     req.end();
   });
 }
