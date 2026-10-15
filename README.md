@@ -1,6 +1,6 @@
 # Telegram MCP
 
-A remote Model Context Protocol server for Telegram. Sign in with a Telegram QR code.
+A production-ready remote Model Context Protocol server that connects your Telegram account to any MCP-compatible AI client. Authenticate securely with a QR code, then read and manage chats, messages, media, polls, contacts, and group administration through 50+ purpose-built tools.
 
 ## Setup
 
