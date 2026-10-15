@@ -1,7 +1,8 @@
 import { escapeHtml, htmlPage } from "../../shared/utils/html.ts";
-import { CLIENT_LOGOS, OPENCODE_LOGO } from "./clientLogos.ts";
+import { AGENT_LOGOS, CLIENT_LOGOS, OPENCODE_LOGO } from "./clientLogos.ts";
 
 const REPOSITORY_URL = "https://github.com/NarihitoM/TelegramMCP";
+const AUTHOR_URL = "https://github.com/NarihitoM";
 
 interface GuideStep {
   text: string;
@@ -18,8 +19,9 @@ interface ClientGuide {
 
 const PLANE = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 3.6 3.4 10.3c-.9.4-.9 1.6 0 1.9l4.3 1.5 1.6 5c.3.8 1.3 1 1.9.4l2.4-2.3 4.4 3.2c.7.5 1.7.1 1.9-.7l2.9-14.1c.2-1-.8-1.9-1.8-1.5Z" fill="currentColor"/><path d="m8.2 13.6 9.4-6.9-7.3 8.3" fill="none" stroke="var(--logo-fold)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
-function icon(path: string): string {
-  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${path}" fill="currentColor"/></svg>`;
+function icon(path: string, evenOdd = false): string {
+  const rule = evenOdd ? ' fill-rule="evenodd" clip-rule="evenodd"' : "";
+  return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${path}" fill="currentColor"${rule}/></svg>`;
 }
 
 function guides(serverUrl: string): ClientGuide[] {
@@ -49,6 +51,17 @@ function guides(serverUrl: string): ClientGuide[] {
         { text: "Open <strong>Settings</strong>, then <strong>Connectors</strong>, and select <strong>Add custom connector</strong>." },
         { text: `Name it <strong>Telegram</strong> and paste <code>${url}</code> as the URL.` },
         { text: "Select <strong>Connect</strong> and scan the QR code that opens." },
+      ],
+    },
+    {
+      id: "codex",
+      name: "Codex",
+      logo: icon(AGENT_LOGOS.codex, true),
+      summary: "Add the server to the Codex CLI or IDE extension from your terminal.",
+      steps: [
+        { text: "Add the server.", code: { value: `codex mcp add telegram --url ${serverUrl}` } },
+        { text: "Sign in.", code: { value: "codex mcp login telegram" } },
+        { text: "Scan the QR code that opens in your browser." },
       ],
     },
     {
@@ -99,6 +112,74 @@ function guides(serverUrl: string): ClientGuide[] {
       ],
     },
     {
+      id: "windsurf",
+      name: "Windsurf",
+      logo: icon(AGENT_LOGOS.windsurf, true),
+      summary: "Add the server to your Windsurf MCP config.",
+      steps: [
+        {
+          text: "In Cascade, select the <strong>MCPs</strong> icon, then <strong>Configure</strong>, and add this to <code>mcp_config.json</code>.",
+          code: {
+            file: "~/.codeium/windsurf/mcp_config.json",
+            value: `{
+  "mcpServers": {
+    "telegram": {
+      "serverUrl": "${serverUrl}"
+    }
+  }
+}`,
+          },
+        },
+        { text: "Save the file and refresh the MCP list. Windsurf opens a sign-in page in your browser." },
+        { text: "Scan the QR code on that page." },
+      ],
+    },
+    {
+      id: "antigravity",
+      name: "Antigravity",
+      logo: icon(AGENT_LOGOS.antigravity, true),
+      summary: "Add the server to your Antigravity MCP config, then authenticate it from Agent settings.",
+      steps: [
+        {
+          text: "In the agent panel, open the <strong>...</strong> menu, select <strong>MCP Servers</strong>, then <strong>Manage MCP Servers</strong> and <strong>View raw config</strong>. Add this to the file.",
+          code: {
+            file: "mcp_config.json",
+            value: `{
+  "mcpServers": {
+    "telegram": {
+      "serverUrl": "${serverUrl}"
+    }
+  }
+}`,
+          },
+        },
+        { text: "Open Agent settings with <kbd>Ctrl+,</kbd> or <kbd>Cmd+,</kbd> on macOS, go to <strong>Customizations</strong> and select <strong>Authenticate</strong> next to telegram." },
+        { text: "Scan the QR code, then paste the code shown in your browser into Antigravity and select <strong>Submit</strong>." },
+      ],
+    },
+    {
+      id: "gemini-cli",
+      name: "Gemini CLI",
+      logo: icon(AGENT_LOGOS.gemini, true),
+      summary: "Add the server from your terminal, then sign in from inside Gemini CLI.",
+      steps: [
+        { text: "Add the server.", code: { value: `gemini mcp add --transport http telegram ${serverUrl}` } },
+        { text: "Start Gemini CLI and run <kbd>/mcp auth telegram</kbd>." },
+        { text: "Scan the QR code that opens in your browser." },
+      ],
+    },
+    {
+      id: "cline",
+      name: "Cline",
+      logo: icon(AGENT_LOGOS.cline, true),
+      summary: "Add the server from the Cline panel in VS Code.",
+      steps: [
+        { text: "Open Cline, select the <strong>MCP Servers</strong> icon and go to the <strong>Remote Servers</strong> tab." },
+        { text: `Enter <strong>telegram</strong> as the name, paste <code>${url}</code> as the URL, choose <strong>Streamable HTTP</strong> and select <strong>Add Server</strong>.` },
+        { text: "Complete the sign-in Cline opens in your browser by scanning the QR code." },
+      ],
+    },
+    {
       id: "opencode",
       name: "OpenCode",
       logo: OPENCODE_LOGO,
@@ -121,6 +202,26 @@ function guides(serverUrl: string): ClientGuide[] {
           },
         },
         { text: "Sign in.", code: { value: "opencode mcp auth telegram" } },
+        { text: "Scan the QR code that opens in your browser." },
+      ],
+    },
+    {
+      id: "hermes",
+      name: "Hermes Agent",
+      logo: icon(AGENT_LOGOS.hermes, true),
+      summary: "Add the server to your Hermes config.",
+      steps: [
+        {
+          text: "Add this to <code>~/.hermes/config.yaml</code>.",
+          code: {
+            file: "~/.hermes/config.yaml",
+            value: `mcp_servers:
+  telegram:
+    url: "${serverUrl}"
+    auth: oauth`,
+          },
+        },
+        { text: "Sign in.", code: { value: "hermes mcp login telegram" } },
         { text: "Scan the QR code that opens in your browser." },
       ],
     },
@@ -230,7 +331,7 @@ section.block { padding: 72px 0; border-top: 1px solid var(--border); }
 .flow h3 { margin: 0 0 6px; font-size: 1.1rem; }
 .flow p { margin: 0; color: var(--muted); }
 .setup { min-width: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
-[role="tablist"] { position: relative; display: flex; gap: 4px; padding: 8px; overflow-x: auto; border-bottom: 1px solid var(--border); scrollbar-width: thin; }
+[role="tablist"] { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px; border-bottom: 1px solid var(--border); }
 [role="tab"] { display: inline-flex; align-items: center; gap: 8px; flex: none; font: inherit; font-weight: 600; font-size: 0.95rem; padding: 10px 14px; border: 0; border-radius: 10px; background: none; color: var(--muted); cursor: pointer; }
 [role="tab"]:hover { color: var(--text); background: var(--bg); }
 [role="tab"][aria-selected="true"] { background: var(--accent-soft); color: var(--text); }
@@ -251,6 +352,7 @@ kbd { font-family: var(--mono); font-size: 0.85em; padding: 1px 6px; border-radi
 .snippet pre code { padding: 0; border: 0; background: none; font-size: inherit; word-break: normal; }
 .footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 28px 0 40px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.9rem; }
 .footer a { color: inherit; }
+.footer .author { color: var(--text); font-weight: 600; }
 @media (max-width: 860px) {
   .hero { grid-template-columns: 1fr; gap: 40px; padding: 24px 0 56px; }
   .flow { grid-template-columns: 1fr; gap: 24px; }
@@ -272,10 +374,6 @@ function select(tab, focus) {
     item.setAttribute("aria-selected", String(active));
     item.tabIndex = active ? 0 : -1;
     document.getElementById(item.getAttribute("aria-controls")).hidden = !active;
-  }
-  const strip = tab.parentElement;
-  if (tab.offsetLeft < strip.scrollLeft || tab.offsetLeft + tab.offsetWidth > strip.scrollLeft + strip.clientWidth) {
-    strip.scrollLeft = tab.offsetLeft - 8;
   }
   if (focus) tab.focus();
 }
@@ -337,7 +435,7 @@ export function homePage(serverUrl: string): Response {
   <section class="hero">
     <div>
       <h1>Your Telegram, inside your AI tools</h1>
-      <p class="lead">Read chats, reply, run polls and manage groups from Claude, Cursor, VS Code and any other MCP client.</p>
+      <p class="lead">Read chats, reply, run polls and manage groups from Claude, Codex, Cursor, Gemini and any other MCP client.</p>
       <span class="url-label">Server URL</span>
       <div class="url-box">
         <code id="server-url">${escapeHtml(serverUrl)}</code>
@@ -378,8 +476,8 @@ export function homePage(serverUrl: string): Response {
 </main>
 
 <footer class="footer">
-  <span>Telegram MCP is an independent project and is not affiliated with Telegram.</span>
-  <a href="${REPOSITORY_URL}" rel="noopener">GitHub</a>
+  <span>Developed by <a class="author" href="${AUTHOR_URL}" rel="noopener">Narihito</a>. Not affiliated with Telegram.</span>
+  <a href="${REPOSITORY_URL}" rel="noopener">Source on GitHub</a>
 </footer>
 </div>`,
   });
