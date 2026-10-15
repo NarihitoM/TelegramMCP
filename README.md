@@ -81,6 +81,50 @@ Cline / Roo Code
 }
 ```
 
+Codex CLI `~/.codex/config.toml`
+
+```toml
+[mcp_servers.telegram]
+url = "https://telegram-mcp-by-narihito.vercel.app/mcp"
+```
+
+```bash
+codex mcp add telegram --url https://telegram-mcp-by-narihito.vercel.app/mcp
+```
+
+Hermes Agent `~/.hermes/config.yaml`
+
+```yaml
+mcp_servers:
+  telegram:
+    url: "https://telegram-mcp-by-narihito.vercel.app/mcp"
+    auth: oauth
+```
+
+Gemini CLI `~/.gemini/settings.json`
+
+```json
+{
+  "mcpServers": {
+    "telegram": {
+      "httpUrl": "https://telegram-mcp-by-narihito.vercel.app/mcp"
+    }
+  }
+}
+```
+
+GitHub Copilot CLI `~/.copilot/mcp-config.json`
+
+```json
+{
+  "mcpServers": {
+    "telegram": {
+      "url": "https://telegram-mcp-by-narihito.vercel.app/mcp"
+    }
+  }
+}
+```
+
 ## Tools
 
 | Tool | Description |
