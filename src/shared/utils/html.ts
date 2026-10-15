@@ -2,34 +2,39 @@ import { randomBytes } from "node:crypto";
 
 const STYLES = `
 :root {
-  --bg: #f4f6f9;
+  --bg: #eef2f6;
   --surface: #ffffff;
-  --text: #16202c;
-  --muted: #5b6878;
-  --border: #dde3ea;
-  --accent: #2a8bd8;
+  --text: #0f1e2e;
+  --muted: #5a6b7d;
+  --border: #d3dce5;
+  --accent: #1c7fd6;
+  --accent-soft: #dcebfa;
   --accent-text: #ffffff;
-  --success: #1f8f55;
-  --danger: #c43d3d;
+  --success: #1f8f5f;
+  --danger: #c2412d;
+  --font: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0f151c;
-    --surface: #18212b;
-    --text: #e8edf3;
-    --muted: #93a1b1;
-    --border: #2a3643;
-    --accent: #4aa3ea;
-    --accent-text: #0b1218;
-    --success: #4cc489;
-    --danger: #ef7070;
+    --bg: #0e1924;
+    --surface: #142231;
+    --text: #e6eef6;
+    --muted: #8da0b3;
+    --border: #22364a;
+    --accent: #5ab1f2;
+    --accent-soft: #16324b;
+    --accent-text: #08131d;
+    --success: #49c08a;
+    --danger: #f07a66;
     color-scheme: dark;
   }
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.5; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .page { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; }
 .card { width: 100%; max-width: 420px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px 28px; }
 .card-header { margin-bottom: 24px; }
@@ -50,7 +55,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: system
 .notice { margin: 0; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); }
 .notice.success { color: var(--success); }
 .notice.error { color: var(--danger); }
-code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 0.9em; padding: 2px 6px; border-radius: 6px; background: var(--bg); border: 1px solid var(--border); word-break: break-all; }
+code { font-family: var(--mono); font-size: 0.9em; padding: 2px 6px; border-radius: 6px; background: var(--bg); border: 1px solid var(--border); word-break: break-all; }
 `;
 
 const ESCAPES: Record<string, string> = {
@@ -65,14 +70,19 @@ export function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (char) => ESCAPES[char] ?? char);
 }
 
+const FONTS_URL =
+  "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap";
+
 interface PageOptions {
   title: string;
   body: string;
   script?: string;
+  styles?: string;
+  description?: string;
   status?: number;
 }
 
-export function htmlPage({ title, body, script, status = 200 }: PageOptions): Response {
+export function htmlPage({ title, body, script, styles = "", description, status = 200 }: PageOptions): Response {
   const nonce = randomBytes(16).toString("base64");
   const html = `<!doctype html>
 <html lang="en">
@@ -80,8 +90,12 @@ export function htmlPage({ title, body, script, status = 200 }: PageOptions): Re
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
+${description ? `<meta name="description" content="${escapeHtml(description)}">` : ""}
 <title>${escapeHtml(title)}</title>
-<style nonce="${nonce}">${STYLES}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="${FONTS_URL}">
+<style nonce="${nonce}">${STYLES}${styles}</style>
 </head>
 <body>
 ${body}
@@ -97,7 +111,8 @@ ${script ? `<script nonce="${nonce}">${script}</script>` : ""}
       "Content-Security-Policy": [
         "default-src 'none'",
         "img-src data:",
-        `style-src 'nonce-${nonce}'`,
+        `style-src 'nonce-${nonce}' https://fonts.googleapis.com`,
+        "font-src https://fonts.gstatic.com",
         `script-src 'nonce-${nonce}'`,
         "connect-src 'self'",
         "form-action 'self'",
