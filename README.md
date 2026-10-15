@@ -1,128 +1,141 @@
 # Telegram MCP
 
-A remote Model Context Protocol server for Telegram. Connect it to Claude, Cursor or any MCP client and sign in with a Telegram QR code.
+A remote Model Context Protocol server for Telegram. Sign in with a Telegram QR code.
 
-## Requirements
+by Narihito — [@not_narihito](https://t.me/not_narihito)
 
-- Node.js 22.18 or later
-- A Telegram API ID and API hash from [my.telegram.org](https://my.telegram.org)
+## Setup
 
-## Installation
+Connect a client to `https://telegram-mcp-by-narihito.vercel.app/mcp`:
 
-```bash
-git clone <your-repo-url> telegram-mcp
-cd telegram-mcp
-npm install
-```
-
-## Configuration
-
-Create a `.env` file in the project root:
-
-```bash
-cp .env.example .env
-```
-
-| Variable | Required | Description |
-| --- | --- | --- |
-| `TELEGRAM_API_ID` | Yes | API ID from my.telegram.org > API development tools |
-| `TELEGRAM_API_HASH` | Yes | API hash from the same page |
-| `SESSION_ENCRYPTION_KEY` | Yes | 64-character hex key, see below |
-| `APP_URL` | No | Public base URL, e.g. `https://telegram-mcp.example.com` |
-| `PORT` | No | Local port, defaults to `3000` |
-
-Generate the encryption key:
-
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-```
-
-Keep this key secret and stable. Changing it signs out every connected user.
-
-## Running locally
-
-```bash
-npm run dev
-```
-
-The server starts at `http://localhost:3000` and the MCP endpoint is `http://localhost:3000/mcp`.
-
-For a production build:
-
-```bash
-npm run build
-npm start
-```
-
-## Deploying to Vercel
-
-1. Push the repository to GitHub, GitLab or Bitbucket.
-2. Import the repository in the Vercel dashboard.
-3. Add `TELEGRAM_API_ID`, `TELEGRAM_API_HASH` and `SESSION_ENCRYPTION_KEY` under **Settings > Environment Variables**.
-4. Deploy.
-
-Your MCP endpoint is `https://<your-project>.vercel.app/mcp`.
-
-## Connecting a client
-
-### Claude Code
-
-```bash
-claude mcp add --transport http telegram https://<your-project>.vercel.app/mcp
-```
-
-### Claude Desktop and Claude.ai
-
-Go to **Settings > Connectors > Add custom connector** and enter the MCP endpoint URL.
-
-### Cursor
-
-Add to `~/.cursor/mcp.json`:
+OpenCode `opencode.json`
 
 ```json
 {
-  "mcpServers": {
+  "mcp": {
     "telegram": {
-      "url": "https://<your-project>.vercel.app/mcp"
+      "type": "remote",
+      "url": "https://telegram-mcp-by-narihito.vercel.app/mcp"
     }
   }
 }
 ```
 
-### Signing in
+Claude Code
 
-On first use, the client opens a sign-in page in your browser:
+```bash
+claude mcp add --transport http telegram https://telegram-mcp-by-narihito.vercel.app/mcp
+```
 
-1. Open Telegram on your phone.
-2. Go to **Settings > Devices > Link Desktop Device**.
-3. Scan the QR code.
-4. Enter your cloud password if two-step verification is enabled.
+Claude Desktop
 
-To disconnect, run the `logout` tool or end the **Telegram MCP** session under **Settings > Devices**.
+Go to Settings > Connectors > Add custom connector and enter `https://telegram-mcp-by-narihito.vercel.app/mcp`.
+
+Cursor `~/.cursor/mcp.json`
+
+```json
+{
+  "mcpServers": {
+    "telegram": {
+      "url": "https://telegram-mcp-by-narihito.vercel.app/mcp"
+    }
+  }
+}
+```
+
+Windsurf `~/.codeium/windsurf/mcp_config.json`
+
+```json
+{
+  "mcpServers": {
+    "telegram": {
+      "serverUrl": "https://telegram-mcp-by-narihito.vercel.app/mcp"
+    }
+  }
+}
+```
+
+VS Code `.vscode/mcp.json`
+
+```json
+{
+  "servers": {
+    "telegram": {
+      "type": "http",
+      "url": "https://telegram-mcp-by-narihito.vercel.app/mcp"
+    }
+  }
+}
+```
+
+Cline / Roo Code
+
+```json
+{
+  "mcpServers": {
+    "telegram": {
+      "type": "streamableHttp",
+      "url": "https://telegram-mcp-by-narihito.vercel.app/mcp"
+    }
+  }
+}
+```
 
 ## Tools
 
-| Category | Tools |
+| Tool | Description |
 | --- | --- |
-| Account | `get_me`, `update_profile`, `logout` |
-| Chats | `list_dialogs`, `get_chat`, `search_public_chats`, `join_chat`, `leave_chat`, `create_group`, `create_channel`, `archive_chat`, `mute_chat`, `pin_chat`, `export_invite_link` |
-| Messages | `get_messages`, `get_unread`, `search_messages`, `send_message`, `reply_to_message`, `edit_message`, `delete_messages`, `forward_messages`, `pin_message`, `unpin_message`, `mark_read`, `get_replies`, `get_scheduled_messages` |
-| Reactions | `send_reaction`, `remove_reaction`, `get_message_reactions` |
-| Polls | `send_poll`, `vote_poll`, `retract_vote`, `get_poll_results`, `close_poll` |
-| Media | `send_file`, `download_media`, `send_location`, `send_contact`, `send_dice` |
-| Contacts | `list_contacts`, `get_user`, `add_contact`, `delete_contact`, `block_user`, `unblock_user` |
-| Group admin | `get_participants`, `add_members`, `remove_member`, `promote_admin`, `demote_admin`, `set_chat_title`, `set_chat_description`, `set_chat_photo` |
-
-## Limits
-
-- Uploads and downloads through the server are capped at 3 MB. Use `send_file` with a `url` for larger files.
-- New messages are not pushed to the client. Use `get_unread` to check for new activity.
-
-## Scripts
-
-| Command | Description |
-| --- | --- |
-| `npm run dev` | Start the development server with auto-reload |
-| `npm run build` | Compile to `dist/` |
-| `npm start` | Run the compiled server |
-| `npm run typecheck` | Type-check without emitting |
+| `get_me` | Return the logged-in Telegram account: id, name, username and phone. |
+| `update_profile` | Change the first name, last name or bio of the logged-in account. Omitted fields stay unchanged. |
+| `logout` | Terminate this Telegram session. The connector stops working until the user logs in again with a new QR code. |
+| `list_dialogs` | List chats, groups and channels ordered by most recent activity, with unread counts and the last message. |
+| `get_chat` | Get details about a user, group or channel, including its description and member counts. |
+| `search_public_chats` | Search public users, groups and channels on Telegram by name or username. |
+| `join_chat` | Join a public group or channel by @username or link, or a private one by invite link (t.me/+hash). |
+| `leave_chat` | Leave a group or channel. |
+| `create_group` | Create a new group (supergroup) and optionally add members. |
+| `create_channel` | Create a new broadcast channel and optionally add subscribers. |
+| `archive_chat` | Move a chat to the archive folder, or back to the main list. |
+| `mute_chat` | Mute or unmute notifications for a chat, forever or for a number of seconds. |
+| `pin_chat` | Pin or unpin a chat at the top of the chat list. |
+| `export_invite_link` | Create an invite link for a group or channel you administer. |
+| `get_messages` | Read recent messages from a chat, newest first. Use offsetId to page back through history. |
+| `get_unread` | Collect unread messages across chats. Use this to check what is new, since push updates are not available. |
+| `search_messages` | Search messages by text inside one chat, or across all chats when chat is omitted. |
+| `send_message` | Send a text message. Supports markdown or HTML formatting, replies, silent sending and scheduling. |
+| `reply_to_message` | Reply to a specific message in a chat. |
+| `edit_message` | Edit the text of a message you sent. |
+| `delete_messages` | Delete messages. By default they are deleted for everyone where Telegram allows it. |
+| `forward_messages` | Forward messages from one chat to another. |
+| `pin_message` | Pin a message in a chat. |
+| `unpin_message` | Unpin one message, or every pinned message in the chat when messageId is omitted. |
+| `mark_read` | Mark messages in a chat as read, up to maxId or everything when omitted. |
+| `get_replies` | Read the reply thread of a message, or the comments under a channel post. |
+| `get_scheduled_messages` | List messages scheduled to be sent later in a chat. |
+| `send_reaction` | Add an emoji reaction to a message. The emoji must be one the chat allows. |
+| `remove_reaction` | Remove your reaction from a message. |
+| `get_message_reactions` | Show reaction counts on a message and, where Telegram allows it, who reacted. |
+| `send_poll` | Create a poll or quiz in a chat. For a quiz, set quiz=true and correctOption to the index of the right answer. |
+| `vote_poll` | Vote in a poll by option index (0-based). Pass several indexes for multiple-choice polls. |
+| `retract_vote` | Remove your vote from a poll that is still open. |
+| `get_poll_results` | Read poll results. For non-anonymous polls, includeVoters also lists who voted for what. |
+| `close_poll` | Stop a poll you created so nobody can vote any more. |
+| `send_file` | Send a photo, video, document or voice note. Pass a public url (Telegram downloads it) or base64 data up to 3 MB. |
+| `download_media` | Download the photo or file attached to a message (up to 3 MB). Images are returned so they can be viewed. |
+| `send_location` | Send a map location. |
+| `send_contact` | Share a phone contact card in a chat. |
+| `send_dice` | Send an animated dice, darts, basketball, football, bowling or slot machine with a random result. |
+| `list_contacts` | List the contacts saved in the Telegram account. |
+| `get_user` | Look up a user by @username or id and return their profile and bio. |
+| `add_contact` | Save a contact, either an existing Telegram user or a phone number. |
+| `delete_contact` | Remove a user from your contacts. |
+| `block_user` | Block a user so they cannot message or call you. |
+| `unblock_user` | Unblock a previously blocked user. |
+| `get_participants` | List members of a group or channel. Channel member lists are only visible to admins. |
+| `add_members` | Add users to a group or channel you administer. |
+| `remove_member` | Remove a user from a group or channel. With ban=true they cannot rejoin. |
+| `promote_admin` | Make a member an admin with the given rights and an optional custom title. |
+| `demote_admin` | Remove admin rights from a member. |
+| `set_chat_title` | Change the title of a group or channel. |
+| `set_chat_description` | Change the description (about text) of a group or channel. |
+| `set_chat_photo` | Change the photo of a group or channel from a public image url or base64 data (up to 5 MB). |
