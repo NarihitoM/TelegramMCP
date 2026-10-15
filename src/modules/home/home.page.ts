@@ -341,7 +341,6 @@ section.block { padding: 72px 0; border-top: 1px solid var(--border); }
 [role="tab"][aria-selected="true"] { background: var(--accent-soft); color: var(--text); }
 .tab-logo { display: grid; place-items: center; width: 20px; height: 20px; }
 .tab-logo svg { width: 18px; height: 18px; }
-.tab-logo-claude-code, .tab-logo-claude-desktop { color: #d97757; }
 [role="tabpanel"] { padding: 28px; }
 .panel-summary { margin: 0 0 20px; color: var(--muted); max-width: 64ch; }
 .guide { margin: 0; padding: 0 0 0 22px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
