@@ -2,8 +2,6 @@
 
 A remote Model Context Protocol server for Telegram. Sign in with a Telegram QR code.
 
-by Narihito — [@not_narihito](https://t.me/not_narihito)
-
 ## Setup
 
 Connect a client to `https://telegram-mcp-by-narihito.vercel.app/mcp`:
