@@ -331,6 +331,10 @@ section.block { padding: 72px 0; border-top: 1px solid var(--border); }
 .flow h3 { margin: 0 0 6px; font-size: 1.1rem; }
 .flow p { margin: 0; color: var(--muted); }
 .setup { min-width: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+.agent-callout { display: grid; gap: 10px; padding: 20px 28px; border-bottom: 1px solid var(--border); background: var(--bg); }
+.agent-callout h3 { margin: 0; font-size: 1rem; }
+.agent-callout p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+.agent-callout .snippet { margin-top: 0; }
 [role="tablist"] { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px; border-bottom: 1px solid var(--border); }
 [role="tab"] { display: inline-flex; align-items: center; gap: 8px; flex: none; font: inherit; font-weight: 600; font-size: 0.95rem; padding: 10px 14px; border: 0; border-radius: 10px; background: none; color: var(--muted); cursor: pointer; }
 [role="tab"]:hover { color: var(--text); background: var(--bg); }
@@ -360,6 +364,7 @@ kbd { font-family: var(--mono); font-size: 0.85em; padding: 1px 6px; border-radi
 @media (max-width: 520px) {
   .shell { padding: 0 16px; }
   section.block { padding: 56px 0; }
+  .agent-callout { padding: 20px 16px; }
   [role="tabpanel"] { padding: 20px 16px; }
   .chat { padding: 16px; }
 }
@@ -419,6 +424,7 @@ for (const button of document.querySelectorAll("[data-copy]")) {
 
 export function homePage(serverUrl: string): Response {
   const list = guides(serverUrl);
+  const agentPrompt = `Set up the Telegram MCP server for me. Name: telegram. URL: ${serverUrl} (Streamable HTTP, OAuth required). Add it to my MCP client config, authenticate (open the browser sign-in if needed, ask me to scan the QR and enter my 2FA password if asked), then verify by calling get_me.`;
 
   return htmlPage({
     title: "Telegram MCP",
@@ -469,6 +475,11 @@ export function homePage(serverUrl: string): Response {
     <h2 id="setup-title">Set up your client</h2>
     <p class="block-intro">Pick your client. If you use two-step verification, the sign-in page asks for your password after the scan.</p>
     <div class="setup">
+      <div class="agent-callout">
+        <h3>Let your agent set it up</h3>
+        <p>Paste this into Claude, Codex, Cursor or any coding agent and it will configure Telegram for you.</p>
+        ${codeBlock("code-agent-prompt", { file: "Agent prompt", value: agentPrompt })}
+      </div>
       <div role="tablist" aria-label="MCP clients">${renderTabs(list)}</div>
       ${renderPanels(list)}
     </div>
