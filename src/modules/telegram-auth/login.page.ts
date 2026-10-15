@@ -91,6 +91,20 @@ $("password-view").addEventListener("submit", (event) => {
   run(call("password", { password }));
 });
 
+$("password-toggle").addEventListener("click", () => {
+  const input = $("password");
+  const visible = input.type === "password";
+  input.type = visible ? "text" : "password";
+  $("password-toggle").setAttribute("aria-pressed", String(visible));
+  $("password-toggle").setAttribute("aria-label", visible ? "Hide password" : "Show password");
+  $("eye-open").hidden = visible;
+  $("eye-closed").hidden = !visible;
+  input.focus();
+  try {
+    input.setSelectionRange(input.value.length, input.value.length);
+  } catch {}
+});
+
 $("restart").addEventListener("click", start);
 
 start();
@@ -117,10 +131,16 @@ export function authorizePage({ request, clientName, redirectHost }: AuthorizeVi
 
   <form class="stack" id="password-view" hidden>
     <p class="muted">Your account is protected with two-step verification. Enter your cloud password.</p>
-    <label class="field">
-      <span>Password <span class="muted" id="hint"></span></span>
-      <input type="password" id="password" autocomplete="current-password">
-    </label>
+    <div class="field">
+      <label for="password">Password <span class="muted" id="hint"></span></label>
+      <div class="password-input">
+        <input type="password" id="password" autocomplete="current-password" spellcheck="false">
+        <button type="button" class="password-toggle" id="password-toggle" aria-label="Show password" aria-pressed="false" aria-controls="password">
+          <svg id="eye-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg id="eye-closed" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M10.6 5.1A9.8 9.8 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-2.2 3.1M6.6 6.6C3.7 8.4 2 12 2 12s3.6 7 10 7a9.6 9.6 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2M3 3l18 18"/></svg>
+        </button>
+      </div>
+    </div>
     <p class="notice error" id="password-error" hidden></p>
     <button class="button" type="submit" id="password-submit">Continue</button>
   </form>

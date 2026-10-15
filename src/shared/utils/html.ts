@@ -50,6 +50,11 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--
 .field { display: grid; gap: 6px; font-weight: 500; }
 .field input { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text); }
 .field input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.password-input { position: relative; display: grid; }
+.password-input input { padding-right: 48px; }
+.password-toggle { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 8px; background: none; color: var(--muted); cursor: pointer; }
+.password-toggle:hover { color: var(--text); }
+.password-toggle svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .button { font: inherit; font-weight: 600; padding: 11px 16px; border: none; border-radius: 10px; background: var(--accent); color: var(--accent-text); cursor: pointer; }
 .button:disabled { opacity: 0.6; cursor: default; }
 .notice { margin: 0; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); }
