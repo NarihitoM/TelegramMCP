@@ -8,8 +8,8 @@ async function readBody(req: IncomingMessage): Promise<Uint8Array<ArrayBuffer>> 
   return new Uint8Array(Buffer.concat(chunks));
 }
 
-export async function toWebRequest(req: IncomingMessage): Promise<Request> {
-  const url = new URL(req.url ?? "/", `http://${req.headers.host ?? "localhost"}`);
+export async function toWebRequest(req: IncomingMessage, path = req.url ?? "/"): Promise<Request> {
+  const url = new URL(path, `http://${req.headers.host ?? "localhost"}`);
   const method = req.method ?? "GET";
 
   const headers = new Headers();

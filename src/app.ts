@@ -1,24 +1,33 @@
+import express, { type ErrorRequestHandler } from "express";
 import { homeRoutes } from "./modules/home/index.ts";
 import { oauthRoutes } from "./modules/oauth/index.ts";
 import { loginRoutes } from "./modules/telegram-auth/index.ts";
 import { mcpRoutes } from "./modules/telegram-tools/index.ts";
-import { json } from "./shared/utils/http.ts";
-import { createRouter } from "./shared/utils/router.ts";
+import { registerRoutes } from "./shared/utils/routes.ts";
 
-const router = createRouter({
-  ...homeRoutes,
-  ...oauthRoutes,
-  ...loginRoutes,
-  ...mcpRoutes,
+const app = express();
+
+app.disable("x-powered-by");
+app.set("trust proxy", true);
+
+registerRoutes(app, homeRoutes);
+registerRoutes(app, oauthRoutes);
+registerRoutes(app, loginRoutes);
+registerRoutes(app, mcpRoutes);
+
+app.use((_req, res) => {
+  res.status(404).json({ error: "not_found" });
 });
 
-export async function handle(req: Request): Promise<Response> {
-  try {
-    return await router(req);
-  } catch (error) {
-    console.error("Unhandled request error:", error instanceof Error ? error.message : String(error));
-    return json({ error: "server_error" }, 500);
+const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
+  console.error("Unhandled request error:", error instanceof Error ? error.message : String(error));
+  if (res.headersSent) {
+    res.destroy();
+    return;
   }
-}
+  res.status(500).json({ error: "server_error" });
+};
 
-export default { fetch: handle };
+app.use(errorHandler);
+
+export default app;

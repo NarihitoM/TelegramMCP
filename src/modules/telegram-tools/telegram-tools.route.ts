@@ -1,6 +1,6 @@
 import { createMcpHandler, withMcpAuth } from "mcp-handler";
 import { withCors } from "../../shared/utils/http.ts";
-import type { Routes } from "../../shared/utils/router.ts";
+import type { Routes } from "../../shared/utils/routes.ts";
 import { MCP_PATH, RESOURCE_METADATA_PATH, verifyAccessToken } from "../oauth/index.ts";
 import { registerTelegramTools } from "./telegram-tools.ts";
 

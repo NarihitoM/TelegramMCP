@@ -1,4 +1,4 @@
-import type { Routes } from "../../shared/utils/router.ts";
+import type { Routes } from "../../shared/utils/routes.ts";
 import { handleAuthorize, handlePassword, handlePoll, handleStart } from "./login.controller.ts";
 
 export const loginRoutes: Routes = {

@@ -1,4 +1,4 @@
-import type { Routes } from "../../shared/utils/router.ts";
+import type { Routes } from "../../shared/utils/routes.ts";
 import { authorizationServerMetadata, protectedResourceMetadata } from "./metadata.service.ts";
 import { handleRegister, handleToken } from "./oauth.controller.ts";
 
