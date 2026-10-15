@@ -29,11 +29,8 @@ function complete(session: StringSession, request: string, authorization: Api.au
   return { step: { status: "done", redirectTo }, state: null };
 }
 
-async function importMigratedToken(client: TelegramClient, migration: Api.auth.LoginTokenMigrateTo): Promise<Api.auth.TypeAuthorization> {
-  await client._switchDC(migration.dcId);
-  const imported = await client.invoke(new Api.auth.ImportLoginToken({ token: migration.token }));
-  if (imported instanceof Api.auth.LoginTokenSuccess) return imported.authorization;
-  throw new Error(`Unexpected login result ${imported.className}`);
+function logStep(step: string): void {
+  console.info(`Telegram login: ${step}`);
 }
 
 async function passwordStep(client: TelegramClient, error?: string): Promise<LoginStep> {
@@ -46,9 +43,31 @@ async function recover(error: unknown, client: TelegramClient, state: LoginState
     return { step: { status: "wait", retryAfter: error.seconds }, state };
   }
   if (rpcErrorMessage(error) === "SESSION_PASSWORD_NEEDED") {
+    logStep("password required");
     return { step: await passwordStep(client), state };
   }
+  logStep(`failed with ${rpcErrorMessage(error) ?? (error instanceof Error ? error.message : "unknown error")}`);
   throw error;
+}
+
+async function importOnDataCenter(client: TelegramClient, migration: Api.auth.LoginTokenMigrateTo, request: string): Promise<LoginOutcome> {
+  const dataCenter = await client.getDC(migration.dcId);
+  logStep(`migrating to DC ${migration.dcId}`);
+
+  return withTelegramClient(
+    "",
+    async (migrated, session) => {
+      try {
+        const imported = await migrated.invoke(new Api.auth.ImportLoginToken({ token: migration.token }));
+        if (!(imported instanceof Api.auth.LoginTokenSuccess)) throw new Error(`Unexpected login result ${imported.className}`);
+        logStep("authorized after migration");
+        return complete(session, request, imported.authorization);
+      } catch (error) {
+        return recover(error, migrated, nextState(session, request));
+      }
+    },
+    dataCenter,
+  );
 }
 
 async function exportLoginToken(client: TelegramClient, session: StringSession, request: string): Promise<LoginOutcome> {
@@ -59,10 +78,12 @@ async function exportLoginToken(client: TelegramClient, session: StringSession, 
       return { step: await qrStep(result), state: nextState(session, request) };
     }
 
-    const authorization =
-      result instanceof Api.auth.LoginTokenMigrateTo ? await importMigratedToken(client, result) : result.authorization;
+    if (result instanceof Api.auth.LoginTokenMigrateTo) {
+      return importOnDataCenter(client, result, request);
+    }
 
-    return complete(session, request, authorization);
+    logStep("authorized");
+    return complete(session, request, result.authorization);
   } catch (error) {
     return recover(error, client, nextState(session, request));
   }

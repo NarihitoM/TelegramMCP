@@ -4,9 +4,16 @@ import { RPCError, SilentLogger, StringSession } from "./gramjs.ts";
 
 export type TelegramRun<T> = (client: TelegramClient, session: StringSession) => Promise<T>;
 
-export async function withTelegramClient<T>(savedSession: string, run: TelegramRun<T>): Promise<T> {
+export interface DataCenter {
+  id: number;
+  ipAddress: string;
+  port: number;
+}
+
+export async function withTelegramClient<T>(savedSession: string, run: TelegramRun<T>, dataCenter?: DataCenter): Promise<T> {
   const { TELEGRAM_API_ID, TELEGRAM_API_HASH } = getEnv();
   const session = new StringSession(savedSession);
+  if (dataCenter) session.setDC(dataCenter.id, dataCenter.ipAddress, dataCenter.port);
   const client = new TelegramClient(session, TELEGRAM_API_ID, TELEGRAM_API_HASH, {
     connectionRetries: 2,
     autoReconnect: false,
