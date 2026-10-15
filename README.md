@@ -125,6 +125,12 @@ GitHub Copilot CLI `~/.copilot/mcp-config.json`
 }
 ```
 
+## Security
+
+Credentials stay on your device. Tokens are stored by your MCP client in OS secure storage (Keychain / Credential Manager / libsecret) or its local auth file, never in this repo.
+
+The server is stateless with no database. Your Telegram session is sealed inside your own access token and can only be opened with the server key. Run `logout` anytime to terminate the session.
+
 ## Tools
 
 | Tool | Description |
@@ -183,3 +189,8 @@ GitHub Copilot CLI `~/.copilot/mcp-config.json`
 | `set_chat_title` | Change the title of a group or channel. |
 | `set_chat_description` | Change the description (about text) of a group or channel. |
 | `set_chat_photo` | Change the photo of a group or channel from a public image url or base64 data (up to 5 MB). |
+
+## Support me
+
+- GitHub: [NarihitoM](https://github.com/NarihitoM)
+- Telegram: [@not_narihito](https://t.me/not_narihito)
