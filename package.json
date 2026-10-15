@@ -1,6 +1,8 @@
 {
   "name": "telegram-mcp",
   "version": "0.1.0",
+  "description": "A remote Model Context Protocol server for Telegram. Sign in with a Telegram QR code.",
+  "license": "MIT",
   "private": true,
   "type": "module",
   "engines": {
