@@ -131,18 +131,18 @@ The server is stateless with no database. Your Telegram session is sealed inside
 
 ## Tools
 
-Tools marked **(destructive)** remove messages, contacts, members or access. They carry the MCP `destructiveHint` annotation, so clients that support it ask for confirmation before running them.
+Tools marked $\color{red}\textsf{destructive}$ remove messages, contacts, members or access. They carry the MCP `destructiveHint` annotation, so clients that support it ask for confirmation before running them.
 
 | Tool | Description |
 | --- | --- |
 | `get_me` | Return the logged-in Telegram account: id, name, username and phone. |
 | `update_profile` | Change the first name, last name or bio of the logged-in account. Omitted fields stay unchanged. |
-| `logout` **(destructive)** | Terminate this Telegram session. The connector stops working until the user logs in again with a new QR code. |
+| `logout` $\color{red}\textsf{destructive}$ | Terminate this Telegram session. The connector stops working until the user logs in again with a new QR code. |
 | `list_dialogs` | List chats, groups and channels ordered by most recent activity, with unread counts and the last message. |
 | `get_chat` | Get details about a user, group or channel, including its description and member counts. |
 | `search_public_chats` | Search public users, groups and channels on Telegram by name or username. |
 | `join_chat` | Join a public group or channel by @username or link, or a private one by invite link (t.me/+hash). |
-| `leave_chat` **(destructive)** | Leave a group or channel. |
+| `leave_chat` $\color{red}\textsf{destructive}$ | Leave a group or channel. |
 | `create_group` | Create a new group (supergroup) and optionally add members. |
 | `create_channel` | Create a new broadcast channel and optionally add subscribers. |
 | `archive_chat` | Move a chat to the archive folder, or back to the main list. |
@@ -155,7 +155,7 @@ Tools marked **(destructive)** remove messages, contacts, members or access. The
 | `send_message` | Send a text message. Supports markdown or HTML formatting, replies, silent sending and scheduling. |
 | `reply_to_message` | Reply to a specific message in a chat. |
 | `edit_message` | Edit the text of a message you sent. |
-| `delete_messages` **(destructive)** | Delete messages. By default they are deleted for everyone where Telegram allows it. |
+| `delete_messages` $\color{red}\textsf{destructive}$ | Delete messages. By default they are deleted for everyone where Telegram allows it. |
 | `forward_messages` | Forward messages from one chat to another. |
 | `pin_message` | Pin a message in a chat. |
 | `unpin_message` | Unpin one message, or every pinned message in the chat when messageId is omitted. |
@@ -178,14 +178,14 @@ Tools marked **(destructive)** remove messages, contacts, members or access. The
 | `list_contacts` | List the contacts saved in the Telegram account. |
 | `get_user` | Look up a user by @username or id and return their profile and bio. |
 | `add_contact` | Save a contact, either an existing Telegram user or a phone number. |
-| `delete_contact` **(destructive)** | Remove a user from your contacts. |
-| `block_user` **(destructive)** | Block a user so they cannot message or call you. |
+| `delete_contact` $\color{red}\textsf{destructive}$ | Remove a user from your contacts. |
+| `block_user` $\color{red}\textsf{destructive}$ | Block a user so they cannot message or call you. |
 | `unblock_user` | Unblock a previously blocked user. |
 | `get_participants` | List members of a group or channel. Channel member lists are only visible to admins. |
 | `add_members` | Add users to a group or channel you administer. |
-| `remove_member` **(destructive)** | Remove a user from a group or channel. With ban=true they cannot rejoin. |
+| `remove_member` $\color{red}\textsf{destructive}$ | Remove a user from a group or channel. With ban=true they cannot rejoin. |
 | `promote_admin` | Make a member an admin with the given rights and an optional custom title. |
-| `demote_admin` **(destructive)** | Remove admin rights from a member. |
+| `demote_admin` $\color{red}\textsf{destructive}$ | Remove admin rights from a member. |
 | `set_chat_title` | Change the title of a group or channel. |
 | `set_chat_description` | Change the description (about text) of a group or channel. |
 | `set_chat_photo` | Change the photo of a group or channel from a public image url or base64 data (up to 5 MB). |
