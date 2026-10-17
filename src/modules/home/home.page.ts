@@ -362,10 +362,29 @@ kbd { font-family: var(--mono); font-size: 0.85em; padding: 1px 6px; border-radi
 }
 @media (max-width: 520px) {
   .shell { padding: 0 16px; }
-  section.block { padding: 56px 0; }
-  .agent-callout { padding: 20px 16px; }
+  .topbar { padding: 14px 0; }
+  .topbar a.source { padding: 8px 0; font-size: 0.95rem; }
+  .hero { gap: 32px; padding: 16px 0 48px; }
+  .lead { font-size: 1.05rem; margin-bottom: 24px; }
+  .url-box { padding-left: 12px; }
+  .url-box code { font-size: 0.85rem; }
+  .copy { min-height: 36px; }
+  .chat { padding: 16px; border-radius: 16px; }
+  .bubble { max-width: 92%; }
+  section.block { padding: 48px 0; }
+  .block-intro { margin-bottom: 24px; font-size: 1rem; }
+  .flow li { display: grid; grid-template-columns: 36px minmax(0, 1fr); column-gap: 14px; }
+  .flow li::before { grid-row: span 2; margin-bottom: 0; }
+  .setup { border-radius: 16px; }
+  .agent-callout { padding: 18px 16px; }
+  [role="tablist"] { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 8px; }
+  [role="tab"] { min-width: 0; padding: 10px; font-size: 0.9rem; text-align: left; line-height: 1.25; }
+  [role="tab"] .tab-logo { flex: none; }
   [role="tabpanel"] { padding: 20px 16px; }
-  .chat { padding: 16px; }
+  .guide { padding-left: 20px; gap: 16px; }
+  .snippet-bar .copy { padding: 6px 14px; }
+  .snippet pre { padding: 12px 14px; font-size: 0.8rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .footer { flex-direction: column; gap: 8px; padding: 24px 0 32px; }
 }
 `;
 
