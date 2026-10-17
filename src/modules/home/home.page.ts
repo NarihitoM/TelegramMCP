@@ -301,6 +301,7 @@ const PAGE_STYLES = `
 .topbar a.source { color: var(--muted); text-decoration: none; font-weight: 500; }
 .topbar a.source:hover { color: var(--text); }
 .hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 56px; align-items: center; padding: 48px 0 72px; }
+.hero > * { min-width: 0; }
 .hero h1 { margin: 0 0 18px; font-size: clamp(2.4rem, 5.2vw, 3.7rem); line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; max-width: 12ch; text-wrap: balance; }
 .lead { margin: 0 0 32px; font-size: 1.15rem; color: var(--muted); max-width: 46ch; }
 .url-label { display: block; font-weight: 600; margin-bottom: 8px; }
@@ -357,8 +358,8 @@ kbd { font-family: var(--mono); font-size: 0.85em; padding: 1px 6px; border-radi
 .footer a { color: inherit; }
 .footer .author { color: var(--text); font-weight: 600; }
 @media (max-width: 860px) {
-  .hero { grid-template-columns: 1fr; gap: 40px; padding: 24px 0 56px; }
-  .flow { grid-template-columns: 1fr; gap: 24px; }
+  .hero { grid-template-columns: minmax(0, 1fr); gap: 40px; padding: 24px 0 56px; }
+  .flow { grid-template-columns: minmax(0, 1fr); gap: 24px; }
 }
 @media (max-width: 520px) {
   .shell { padding: 0 16px; }
@@ -367,7 +368,7 @@ kbd { font-family: var(--mono); font-size: 0.85em; padding: 1px 6px; border-radi
   .hero { gap: 32px; padding: 16px 0 48px; }
   .lead { font-size: 1.05rem; margin-bottom: 24px; }
   .url-box { padding-left: 12px; }
-  .url-box code { font-size: 0.85rem; }
+  .url-box code { font-size: 0.85rem; white-space: normal; overflow-wrap: anywhere; line-height: 1.45; }
   .copy { min-height: 36px; }
   .chat { padding: 16px; border-radius: 16px; }
   .bubble { max-width: 92%; }
