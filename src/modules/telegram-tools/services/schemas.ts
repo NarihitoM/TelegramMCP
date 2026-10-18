@@ -12,12 +12,22 @@ export const userRef = z
 
 export const messageId = z.number().int().positive().describe("Message id within the chat");
 
+export const messageText = z
+  .string()
+  .min(1)
+  .refine((text) => text.length <= 4096, "Telegram messages can be at most 4096 characters");
+
 export const parseMode = z
   .enum(["markdown", "html", "none"])
   .default("markdown")
   .describe("How to format the text");
 
-export const isoDateTime = z.iso.datetime({ offset: true }).describe("ISO 8601 date-time, e.g. 2026-10-15T18:30:00Z");
+const isoDateTimeFormat = z.iso.datetime({ offset: true });
+
+export const isoDateTime = z
+  .string()
+  .refine((value) => isoDateTimeFormat.safeParse(value).success, "Expected an ISO 8601 date-time, e.g. 2026-10-15T18:30:00Z")
+  .describe("ISO 8601 date-time, e.g. 2026-10-15T18:30:00Z");
 
 export function toParseMode(mode: z.infer<typeof parseMode>): "md" | "html" | false {
   if (mode === "markdown") return "md";

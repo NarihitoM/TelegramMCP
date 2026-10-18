@@ -4,7 +4,7 @@ import { z } from "zod";
 import { defineTool, DESTRUCTIVE, READ_ONLY, WRITE } from "../services/defineTool.ts";
 import { mapDialog, mapMessage } from "../services/mappers.ts";
 import { normalizeChatRef, resolvePeer } from "../services/peers.ts";
-import { chatRef, isoDateTime, messageId, parseMode, toParseMode, toUnixSeconds, userRef } from "../services/schemas.ts";
+import { chatRef, isoDateTime, messageId, messageText, parseMode, toParseMode, toUnixSeconds, userRef } from "../services/schemas.ts";
 
 const SEARCH_FILTERS = {
   photos: () => new Api.InputMessagesFilterPhotos(),
@@ -98,7 +98,7 @@ export function registerMessageTools(server: McpServer): void {
     description: "Send a text message. Supports markdown or HTML formatting, replies, silent sending and scheduling.",
     input: z.object({
       chat: chatRef,
-      text: z.string().min(1).max(4096),
+      text: messageText,
       parseMode,
       replyTo: messageId.optional().describe("Reply to this message id"),
       silent: z.boolean().default(false).describe("Send without notification sound"),
@@ -125,7 +125,7 @@ export function registerMessageTools(server: McpServer): void {
     input: z.object({
       chat: chatRef,
       messageId,
-      text: z.string().min(1).max(4096),
+      text: messageText,
       parseMode,
       silent: z.boolean().default(false),
     }),
@@ -147,7 +147,7 @@ export function registerMessageTools(server: McpServer): void {
     input: z.object({
       chat: chatRef,
       messageId,
-      text: z.string().min(1).max(4096),
+      text: messageText,
       parseMode,
       linkPreview: z.boolean().default(true),
     }),
