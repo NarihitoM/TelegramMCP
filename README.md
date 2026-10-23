@@ -1,4 +1,8 @@
-# Telegram MCP
+<p align="center">
+  <img src="public/telegram-logo.svg" width="96" height="96" alt="Telegram logo">
+</p>
+
+<h1 align="center">Telegram MCP</h1>
 
 A production-ready remote Model Context Protocol server that connects your Telegram account to any MCP-compatible AI client. Authenticate securely with a QR code, then read and manage chats, messages, media, polls, contacts, and group administration through 50+ purpose-built tools.
 
